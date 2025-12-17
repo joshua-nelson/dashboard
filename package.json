@@ -1,0 +1,20 @@
+{
+  "name": "dashboard",
+  "version": "1.0.0",
+  "description": "Modern dashboard proxy for JoshBot REST API",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "test": "node --check server.js"
+  },
+  "keywords": [
+    "dashboard",
+    "joshbot",
+    "music",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "MIT"
+}
