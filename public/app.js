@@ -38,7 +38,6 @@ const fetchJson = async (path, options = {}) => {
       'Content-Type': 'application/json',
       ...(options.headers || {}),
     },
-    credentials: 'same-origin',
     ...options,
   });
   const text = await response.text();
@@ -47,11 +46,6 @@ const fetchJson = async (path, options = {}) => {
     data = text ? JSON.parse(text) : {};
   } catch (err) {
     data = { error: text || 'Request failed' };
-  }
-  if (response.status === 401) {
-    const next = encodeURIComponent(window.location.pathname + window.location.search);
-    window.location.href = `/login?next=${next}`;
-    return Promise.reject(new Error('Not authenticated'));
   }
   if (!response.ok) {
     const message = data?.error || response.statusText;

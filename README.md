@@ -20,9 +20,6 @@ Set the following environment variables when running the dashboard container/ser
 - `API_BASE_URL` (optional): Base URL for the JoshBot API. Defaults to `http://172.17.0.2:8081`.
 - `PORT` (optional): Port for the dashboard web server. Defaults to `3000`.
 - `NODE_ENV` (optional): Set to `development` for verbose proxy error logging.
-- `DASHBOARD_PASSWORD` (**required**): Shared password required to access the dashboard UI.
-- `SESSION_SECRET` (optional): Secret for signing session cookies; set to persist sessions across restarts. A random value is generated if omitted.
-- `MOD_USER_IDS` (optional): Comma-separated Discord user IDs allowed to use admin tools. When set, admin requests are blocked for any other session.
 
 ## Running locally
 1. Install dependencies (none are required beyond Node 18+, but `npm install` will create `node_modules` if you add packages later):
@@ -31,11 +28,9 @@ Set the following environment variables when running the dashboard container/ser
    ```
 2. Start the server:
    ```bash
-   API_TOKEN="<your-token>" DASHBOARD_PASSWORD="<dashboard-password>" API_BASE_URL="http://172.17.0.2:8081" npm start
+   API_TOKEN="<your-token>" API_BASE_URL="http://172.17.0.2:8081" npm start
    ```
 3. Open the dashboard at [http://localhost:3000](http://localhost:3000).
-
-Unauthenticated users are redirected to `/login`. Successful logins set a signed, HttpOnly cookie that gates both the UI and `/api/*` proxy endpoints. Provide your Discord User ID at login if you want to access admin tools; when `MOD_USER_IDS` is configured, only those IDs can call admin endpoints.
 
 ## Scripts
 - `npm start` – start the production server.
