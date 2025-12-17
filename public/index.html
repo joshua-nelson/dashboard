@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JoshBot Control Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    />
+    <style>
+      body { font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    </style>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="relative isolate overflow-hidden">
+      <div class="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-18rem]">
+        <div
+          class="relative left-1/2 aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 opacity-20 sm:w-[72.25rem]"
+          aria-hidden="true"
+        ></div>
+      </div>
+      <header class="border-b border-white/5 bg-slate-950/60 backdrop-blur sticky top-0 z-10">
+        <div class="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm text-slate-400">JoshBot</p>
+            <h1 class="text-2xl font-semibold">Control &amp; Monitoring Dashboard</h1>
+          </div>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 rounded-full bg-slate-900/60 px-3 py-2 ring-1 ring-white/10">
+              <span class="h-2.5 w-2.5 rounded-full bg-emerald-400" id="healthDot"></span>
+              <span class="text-sm font-medium" id="healthStatus">Checking...</span>
+            </div>
+            <button
+              id="refreshAll"
+              class="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:border-indigo-400 hover:text-indigo-100 hover:bg-indigo-500/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992m0 0V4.356m0 4.992-4.992-4.992M7.977 14.652H2.985m0 0v4.992m0-4.992 4.992 4.992M8.25 8.25l-3 3m0 0 3 3m-3-3h12.75" />
+              </svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main class="mx-auto max-w-7xl px-6 py-8 space-y-8">
+        <section class="grid gap-6 md:grid-cols-2">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-indigo-500/10">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-400">Bot status</p>
+                <h2 class="text-xl font-semibold">Music playback</h2>
+              </div>
+              <span id="stateBadge" class="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-semibold text-indigo-100">Unknown</span>
+            </div>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-2">
+              <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4">
+                <p class="text-sm text-slate-400">Current track</p>
+                <h3 id="currentTitle" class="mt-1 text-lg font-semibold text-white">Nothing playing</h3>
+                <p id="currentMeta" class="text-sm text-slate-400">—</p>
+                <div class="mt-3 flex items-center gap-3 text-sm text-slate-300">
+                  <div class="flex items-center gap-1" id="position">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                    <span>00:00 / 00:00</span>
+                  </div>
+                  <div class="flex items-center gap-1" id="volume">
+                    <span class="h-2 w-2 rounded-full bg-indigo-400"></span>
+                    <span>Volume 100%</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm text-slate-400">Queue</p>
+                  <button
+                    id="refreshState"
+                    class="text-xs font-semibold text-indigo-200 hover:text-indigo-100"
+                  >Refresh</button>
+                </div>
+                <ul id="queue" class="mt-3 space-y-2 text-sm text-slate-200">
+                  <li class="text-slate-400">No queued tracks.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="mt-6 grid gap-4 md:grid-cols-2">
+              <form id="playForm" class="rounded-xl border border-white/10 bg-slate-900/80 p-4 space-y-4">
+                <div class="flex items-center justify-between">
+                  <p class="text-sm text-slate-400">Queue a track</p>
+                  <span class="text-xs text-slate-500">Requires user ID</span>
+                </div>
+                <label class="block text-sm font-medium text-slate-200">
+                  Discord User ID
+                  <input
+                    id="userId"
+                    name="userId"
+                    required
+                    class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none"
+                    placeholder="123456789012345678"
+                  />
+                </label>
+                <label class="block text-sm font-medium text-slate-200">
+                  Song search or URL
+                  <input
+                    id="query"
+                    name="query"
+                    required
+                    class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none"
+                    placeholder="lofi beats"
+                  />
+                </label>
+                <div class="flex flex-wrap gap-4 text-sm text-slate-200">
+                  <label class="inline-flex items-center gap-2">
+                    <input id="immediate" type="checkbox" class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-500 focus:ring-indigo-400" />
+                    Play immediately
+                  </label>
+                  <label class="inline-flex items-center gap-2">
+                    <input id="skipCurrent" type="checkbox" class="h-4 w-4 rounded border-white/10 bg-white/5 text-indigo-500 focus:ring-indigo-400" />
+                    Skip current track
+                  </label>
+                </div>
+                <button
+                  type="submit"
+                  class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300"
+                >
+                  Queue track
+                </button>
+              </form>
+
+              <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4">
+                <p class="text-sm text-slate-400">Playback controls</p>
+                <div class="mt-4 grid grid-cols-2 gap-3">
+                  <button data-action="pause" class="control-btn bg-amber-500/20 text-amber-100 hover:bg-amber-500/30">Pause</button>
+                  <button data-action="resume" class="control-btn bg-emerald-500/20 text-emerald-100 hover:bg-emerald-500/30">Resume</button>
+                  <button data-action="skip" class="control-btn bg-indigo-500/20 text-indigo-100 hover:bg-indigo-500/30">Skip</button>
+                  <button data-action="stop" class="control-btn bg-rose-500/20 text-rose-100 hover:bg-rose-500/30">Stop</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-indigo-500/10 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-slate-400">Administration</p>
+                <h2 class="text-xl font-semibold">Guild tools</h2>
+              </div>
+              <span class="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold text-slate-200" id="guildId">Guild ID required</span>
+            </div>
+
+            <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <p class="text-sm text-slate-400">System status</p>
+                <button id="refreshStatus" class="text-xs font-semibold text-indigo-200 hover:text-indigo-100">Refresh</button>
+              </div>
+              <dl id="statusList" class="grid grid-cols-2 gap-3 text-sm text-slate-200"></dl>
+            </div>
+
+            <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4 space-y-3">
+              <div class="flex items-center justify-between">
+                <p class="text-sm text-slate-400">Logs</p>
+                <div class="flex items-center gap-2 text-xs text-slate-300">
+                  <label class="flex items-center gap-1">
+                    Limit
+                    <input id="logLimit" type="number" value="50" min="1" max="500" class="w-20 rounded-md border border-white/10 bg-white/5 px-2 py-1 text-right text-xs" />
+                  </label>
+                  <button id="refreshLogs" class="rounded-md bg-white/5 px-2 py-1 font-semibold text-indigo-100 hover:bg-indigo-500/20">Fetch</button>
+                </div>
+              </div>
+              <div id="logs" class="h-56 overflow-auto rounded-lg bg-slate-950/50 p-3 text-xs font-mono text-slate-200">No logs yet.</div>
+            </div>
+
+            <div class="rounded-xl border border-white/10 bg-slate-900/80 p-4 space-y-4">
+              <div class="flex flex-wrap gap-3">
+                <div class="flex-1 min-w-[200px]">
+                  <label class="block text-sm font-medium text-slate-200">
+                    DJ User ID
+                    <input id="djUserId" class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none" placeholder="123..." />
+                  </label>
+                </div>
+                <div class="flex-1 min-w-[160px]">
+                  <label class="block text-sm font-medium text-slate-200">
+                    Voice channel ID
+                    <input id="djChannelId" class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none" placeholder="optional" />
+                  </label>
+                </div>
+                <div class="flex-1 min-w-[160px]">
+                  <label class="block text-sm font-medium text-slate-200">
+                    Seed
+                    <input id="djSeed" class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none" placeholder="optional" />
+                  </label>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <button id="enableDj" class="rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-400">Enable DJ</button>
+                <button id="disableDj" class="rounded-lg bg-rose-500 px-4 py-2 text-sm font-semibold text-white hover:bg-rose-400">Disable DJ</button>
+              </div>
+              <div class="flex flex-wrap items-end gap-3">
+                <div class="flex-1 min-w-[200px]">
+                  <label class="block text-sm font-medium text-slate-200">
+                    Idle timeout (minutes)
+                    <input id="idleMinutes" type="number" min="0" value="30" class="mt-1 w-full rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-slate-500 focus:border-indigo-400 focus:outline-none" />
+                  </label>
+                </div>
+                <button id="updateIdle" class="rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Update timeout</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="fixed bottom-4 right-4 hidden max-w-sm rounded-xl border border-white/10 bg-slate-900/90 px-4 py-3 text-sm text-white shadow-xl shadow-black/30"></div>
+
+    <script src="/app.js" defer></script>
+  </body>
+</html>
