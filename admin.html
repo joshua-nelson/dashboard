@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JoshBot Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">JB</div>
+          <div>
+            <div class="brand-title">JoshBot</div>
+            <div class="brand-sub">Admin workspace</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="health-pill">
+            <span class="health-dot" id="healthDot"></span>
+            <span id="healthStatus">Checking API</span>
+          </div>
+          <a class="btn btn-ghost" href="./index.html">Player</a>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <h1>Admin operations.</h1>
+          <p>Monitor system status, inspect logs, and manage DJ mode without touching playback.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="refreshStatus">Refresh status</button>
+            <button class="btn btn-secondary" id="refreshLogs">Refresh logs</button>
+            <button class="btn btn-ghost" id="testHealth">Test API</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">
+            <div>
+              <h2>Connection</h2>
+              <p class="card-sub">Same settings as the player page.</p>
+            </div>
+          </div>
+          <form id="connectionForm">
+            <div class="form-row">
+              <div>
+                <label for="apiBaseUrl">API base URL</label>
+                <input id="apiBaseUrl" name="apiBaseUrl" placeholder="http://localhost:8081" />
+              </div>
+              <div>
+                <label for="apiToken">API token</label>
+                <input id="apiToken" name="apiToken" type="password" placeholder="API_TOKEN" />
+              </div>
+            </div>
+            <div class="form-row" style="margin-top: 16px;">
+              <div>
+                <label for="guildId">Guild ID</label>
+                <input id="guildId" name="guildId" placeholder="Discord guild id" />
+              </div>
+              <div>
+                <label for="channelId">Voice channel ID</label>
+                <input id="channelId" name="channelId" placeholder="Voice channel id" />
+              </div>
+              <div>
+                <label for="userId">Moderator user ID</label>
+                <input id="userId" name="userId" placeholder="Discord user id" />
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" type="submit">Save settings</button>
+              <span class="info-pill">Required if API_ENFORCE_MODS_ROLE is on.</span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <main class="grid">
+        <section class="card span-6">
+          <div class="section-title">
+            <div>
+              <h2>AI DJ controls</h2>
+              <p class="card-sub">Enable or disable DJ mode with an optional seed.</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label for="djSeed">Seed prompt</label>
+              <input id="djSeed" name="djSeed" placeholder="lofi sunrise" />
+            </div>
+            <div>
+              <label for="djChannelId">Voice channel override</label>
+              <input id="djChannelId" name="djChannelId" placeholder="optional" />
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-primary" id="djEnable" type="button">Enable DJ</button>
+            <button class="btn btn-ghost" id="djDisable" type="button">Disable DJ</button>
+          </div>
+        </section>
+
+        <section class="card span-6">
+          <div class="section-title">
+            <div>
+              <h2>Idle timeout</h2>
+              <p class="card-sub">Set idle disconnect in minutes (0 disables).</p>
+            </div>
+          </div>
+          <div class="form-row">
+            <div>
+              <label for="idleMinutes">Minutes</label>
+              <input id="idleMinutes" name="idleMinutes" type="number" min="0" step="1" placeholder="10" />
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="btn btn-primary" id="idleApply" type="button">Update timeout</button>
+          </div>
+        </section>
+
+        <section class="card span-6">
+          <div class="section-title">
+            <div>
+              <h2>Service status</h2>
+              <p class="card-sub">Live health from the bot runtime.</p>
+            </div>
+          </div>
+          <div class="grid" id="statusGrid" style="grid-template-columns: 1fr; gap: 12px;"></div>
+        </section>
+
+        <section class="card span-6">
+          <div class="section-title">
+            <div>
+              <h2>Logs</h2>
+              <p class="card-sub">Latest log messages from the bot.</p>
+            </div>
+            <div class="form-row" style="align-items: end;">
+              <div>
+                <label for="logLimit">Limit</label>
+                <input id="logLimit" name="logLimit" type="number" min="1" max="500" value="200" />
+              </div>
+            </div>
+          </div>
+          <div style="overflow-x: auto;">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Level</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody id="logsTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module" src="./admin.js"></script>
+  </body>
+</html>

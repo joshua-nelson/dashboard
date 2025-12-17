@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JoshBot Control Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark">JB</div>
+          <div>
+            <div class="brand-title">JoshBot</div>
+            <div class="brand-sub">Playback control center</div>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <div class="health-pill">
+            <span class="health-dot" id="healthDot"></span>
+            <span id="healthStatus">Checking API</span>
+          </div>
+          <a class="btn btn-ghost" href="./admin.html">Admin</a>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <h1>Live music for your Discord.</h1>
+          <p>Point this dashboard at your JoshBot REST API to queue tracks, monitor playback, and steer the vibe.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="refreshAll">Refresh now</button>
+            <button class="btn btn-secondary" id="testHealth">Test API</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="section-title">
+            <div>
+              <h2>Connection</h2>
+              <p class="card-sub">Store your API settings locally in this browser.</p>
+            </div>
+          </div>
+          <form id="connectionForm">
+            <div class="form-row">
+              <div>
+                <label for="apiBaseUrl">API base URL</label>
+                <input id="apiBaseUrl" name="apiBaseUrl" placeholder="http://localhost:8081" />
+              </div>
+              <div>
+                <label for="apiToken">API token</label>
+                <input id="apiToken" name="apiToken" type="password" placeholder="API_TOKEN" />
+              </div>
+            </div>
+            <div class="form-row" style="margin-top: 16px;">
+              <div>
+                <label for="guildId">Guild ID</label>
+                <input id="guildId" name="guildId" placeholder="Discord guild id" />
+              </div>
+              <div>
+                <label for="channelId">Voice channel ID</label>
+                <input id="channelId" name="channelId" placeholder="Voice channel id" />
+              </div>
+              <div>
+                <label for="userId">Requester / Mod user ID</label>
+                <input id="userId" name="userId" placeholder="Discord user id" />
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" type="submit">Save settings</button>
+              <span class="info-pill">Remember to allow this domain in API_CORS_ORIGIN.</span>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <main class="grid">
+        <section class="card span-7">
+          <div class="section-title">
+            <div>
+              <h2>Now playing</h2>
+              <p class="card-sub">Real-time playback state from Lavalink.</p>
+            </div>
+            <span class="status-pill" id="statusPill">idle</span>
+          </div>
+          <div class="track">
+            <div class="track-cover">
+              <img id="trackCover" alt="Album art" src="https://placehold.co/220x220/0b0f14/8b96a9?text=JoshBot" />
+            </div>
+            <div>
+              <p class="track-title" id="trackTitle">Nothing playing</p>
+              <p class="track-meta" id="trackMeta">n/a</p>
+              <div class="pill-row">
+                <span class="info-pill">Requested by <span id="trackRequester">n/a</span></span>
+                <span class="info-pill" id="volume">Volume n/a</span>
+              </div>
+              <div class="progress">
+                <div class="progress-times">
+                  <span id="elapsed">0:00</span>
+                  <span id="duration">0:00</span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+              <div class="control-grid">
+                <button class="btn btn-secondary btn-square" data-action="pause">Pause</button>
+                <button class="btn btn-secondary btn-square" data-action="resume">Resume</button>
+                <button class="btn btn-secondary btn-square" data-action="skip">Skip</button>
+                <button class="btn btn-danger btn-square" data-action="stop">Stop</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card span-5">
+          <div class="section-title">
+            <div>
+              <h2>Queue</h2>
+              <p class="card-sub">Tracks lined up next.</p>
+            </div>
+          </div>
+          <ol class="queue-list" id="queueList"></ol>
+        </section>
+
+        <section class="card span-5">
+          <div class="section-title">
+            <div>
+              <h2>Add a track</h2>
+              <p class="card-sub">Search keywords or drop a URL.</p>
+            </div>
+          </div>
+          <form id="playForm">
+            <div>
+              <label for="playQuery">Song search or URL</label>
+              <input id="playQuery" name="playQuery" placeholder="lofi beats or https://..." required />
+            </div>
+            <div class="pill-row">
+              <label class="info-pill inline-label">
+                <input id="playImmediate" type="checkbox" />
+                Play immediately
+              </label>
+              <label class="info-pill inline-label">
+                <input id="playSkip" type="checkbox" />
+                Skip current
+              </label>
+            </div>
+            <div class="button-row">
+              <button class="btn btn-primary" type="submit">Queue track</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card span-7">
+          <div class="section-title">
+            <div>
+              <h2>Recently played</h2>
+              <p class="card-sub">History from the API state endpoint.</p>
+            </div>
+          </div>
+          <ol class="history-list" id="historyList"></ol>
+        </section>
+      </main>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>
